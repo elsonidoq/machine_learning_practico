@@ -1,5 +1,5 @@
 
-# Código de la primer clase
+# Código de la primera clase
 
 Vas a encontrar estas notebooks
 
