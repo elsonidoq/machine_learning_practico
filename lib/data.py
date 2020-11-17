@@ -82,3 +82,28 @@ def load_data(path: Path):
     movies = movies[~movies.averageRating.isna()].copy()
 
     return movies
+
+
+def load_rating_train_dev_test(movies: pd.DataFrame, train_max_year=2015, dev_max_year=2017, sample_count: int = None):
+    """
+    :param movies: Movies dataframe
+    :param train_max_year: cut year for training
+    :param dev_max_year: cut year for dev (and starts test)
+    :param sample_count: whether to take a sample (useful for testing the code). Ignored when it is None
+    """
+    if sample_count:
+        movies = movies.sample(sample_count)
+
+    train_df = movies[movies.startYear <= train_max_year]
+    dev_df = movies[(movies.startYear > train_max_year) & (movies.startYear <= dev_max_year)]
+    test_df = movies[movies.startYear > dev_max_year]
+
+    X_train = train_df.to_dict(orient='records')
+    X_dev = dev_df.to_dict(orient='records')
+    X_test = test_df.to_dict(orient='records')
+
+    y_train = train_df.averageRating.values
+    y_dev = dev_df.averageRating.values
+    y_test = test_df.averageRating.values
+
+    return dict(X_train=X_train, y_train=y_train, X_dev=X_dev, y_dev=y_dev, X_test=X_test, y_test=y_test)
